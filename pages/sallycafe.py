@@ -111,7 +111,7 @@ def link_html():
 
 # link_html()
 write_title("Sally's CAFE☆")
-show_progress()
+# show_progress()
 write_message("CHECK your state in the slider bar!")
 sidebar()
 # show_expander()
