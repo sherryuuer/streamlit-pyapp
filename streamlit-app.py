@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-
+from PIL import Image
 
 st.title("Sally's CAFE&LAB★")
 
@@ -24,3 +24,5 @@ Feel free to explore and join the journey with me! 🚀✨
 
 
 """
+img = Image.open("images/buzzimage.png")
+st.image(img, caption="sally", use_column_width=True)

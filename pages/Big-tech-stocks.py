@@ -14,23 +14,6 @@ Select DAYS:
 days = st.sidebar.slider('days', 1, 50, 20)
 
 """
-### **Facebook**
-Headquartered in Menlo Park, California, Facebook is a global social media giant. Founded by Mark Zuckerberg in 2004, it connects people worldwide through its social networking platform. Facebook has expanded its influence with acquisitions like Instagram and WhatsApp.
-
-### **Amazon**
-Based in Seattle, Washington, Amazon is a powerhouse in e-commerce, cloud computing, digital streaming, and artificial intelligence. Founded by Jeff Bezos in 1994, Amazon has grown into one of the largest and most diverse tech companies globally.
-
-### **Apple**
-With its headquarters in Cupertino, California, Apple is renowned for its innovation in consumer electronics, software, and services. Founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in 1976, Apple has consistently shaped the tech industry with iconic products like the iPhone, MacBook, and iOS ecosystem.
-
-### **Google**
-Situated in Mountain View, California, Google is synonymous with internet search, online advertising, and cloud computing. Founded by Larry Page and Sergey Brin in 1998, Google's services, including Gmail, Google Maps, and YouTube, have become integral to the digital landscape.
-
-### **Microsoft**
-Headquartered in Redmond, Washington, Microsoft is a technology giant specializing in software, hardware, and cloud services. Founded by Bill Gates and Paul Allen in 1975, Microsoft is known for its Windows operating system, Office suite, and contributions to the development of personal computing.
-
----
-
 ### **Tech Trends:**
 Keeping an eye on these tech behemoths means staying informed about their constant innovations. Whether it's Facebook's foray into virtual reality with Oculus, Amazon's advancements in drone delivery, Apple's exploration of augmented reality, Google's developments in AI and self-driving cars, or Microsoft's strides in cloud computing and gaming, the tech landscape is continually evolving.
 
@@ -104,7 +87,8 @@ try:
             .mark_line(opacity=0.8, clip=True)
             .encode(
                 x="Date:T",
-                y=alt.Y("Stock Prices(USD):Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
+                y=alt.Y("Stock Prices(USD):Q", stack=None,
+                        scale=alt.Scale(domain=[ymin, ymax])),
                 color='Name:N'
             )
         )
