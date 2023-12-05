@@ -4,3 +4,4 @@ pandas==2.1.0
 yfinance==0.2.31
 pyjokes==0.5.0
 translate
+gspread
