@@ -114,8 +114,3 @@ def main():
         st.json(predictions)
         st.subheader("Prediction time (s):")
         st.write(prediction_time)
-
-
-# Run the Streamlit app
-if __name__ == "__main__":
-    main()
