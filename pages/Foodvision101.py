@@ -82,35 +82,33 @@ def predict(img) -> Tuple[Dict, float]:
 
     return pred_labels_and_probs, pred_time
 
+
 # Streamlit app
+st.title("FoodVision Big 🍔👁")
+st.write(
+    "An EfficientNetB2 feature extractor computer vision model to classify images of food into [101 different classes](https://github.com/mrdbourke/pytorch-deep-learning/blob/main/extras/food101_class_names.txt).")
+st.markdown(
+    "Created at when learn [PyTorch Model Deployment](https://www.learnpytorch.io/09_pytorch_model_deployment/).")
 
+# Upload image through Streamlit
+uploaded_image = st.file_uploader(
+    "Choose an image...", type=["jpg", "png", "jpeg"])
 
-def main():
-    st.title("FoodVision Big 🍔👁")
-    st.write(
-        "An EfficientNetB2 feature extractor computer vision model to classify images of food into [101 different classes](https://github.com/mrdbourke/pytorch-deep-learning/blob/main/extras/food101_class_names.txt).")
-    st.markdown(
-        "Created at when learn [PyTorch Model Deployment](https://www.learnpytorch.io/09_pytorch_model_deployment/).")
+if uploaded_image is not None:
+    # Display the image
+    st.image(uploaded_image, caption="Uploaded Image.",
+             use_column_width=True)
+    st.write("")
+    st.write("Classifying...")
 
-    # Upload image through Streamlit
-    uploaded_image = st.file_uploader(
-        "Choose an image...", type=["jpg", "png", "jpeg"])
+    # Convert to PIL Image
+    pil_image = Image.open(uploaded_image)
 
-    if uploaded_image is not None:
-        # Display the image
-        st.image(uploaded_image, caption="Uploaded Image.",
-                 use_column_width=True)
-        st.write("")
-        st.write("Classifying...")
+    # Call the prediction function
+    predictions, prediction_time = predict(pil_image)
 
-        # Convert to PIL Image
-        pil_image = Image.open(uploaded_image)
-
-        # Call the prediction function
-        predictions, prediction_time = predict(pil_image)
-
-        # Display predictions and prediction time
-        st.subheader("Predictions:")
-        st.json(predictions)
-        st.subheader("Prediction time (s):")
-        st.write(prediction_time)
+    # Display predictions and prediction time
+    st.subheader("Predictions:")
+    st.json(predictions)
+    st.subheader("Prediction time (s):")
+    st.write(prediction_time)
