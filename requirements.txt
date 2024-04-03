@@ -7,3 +7,4 @@ translate
 gspread
 seaborn
 matplotlib
+torch
