@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
 
-def train_and_visualize_loss():
+def train_and_visualize_loss(lr_D, lr_G, num_epochs, latent_dim):
     # create the data
     X = torch.normal(0.0, 1, (1000, 2))
     A = torch.tensor([[1, 2], [-0.1, 0.5]])
@@ -137,7 +137,7 @@ def train_and_visualize_loss():
         print(f'loss_D {loss_D[-1]}, loss_G {loss_G[-1]}, \
             {(metrics[2]*num_epochs) / (tok-tik):.1f} examples/sec')
 
-    lr_D, lr_G, latent_dim, num_epochs = 0.05, 0.005, 2, 30
+    # lr_D, lr_G, latent_dim, num_epochs = 0.05, 0.005, 2, 30
     train(Disc, Gen, dataloader, num_epochs, lr_D,
           lr_G, latent_dim, data[:100].detach().numpy())
 
@@ -160,6 +160,27 @@ st.markdown(
     ```
     '''
 )
+st.subheader('Set the hyperparameters:')
 
-if st.button('RUN'):
-    train_and_visualize_loss()
+# 获取用户输入
+lr_D = st.text_input('Set the learning rate of Discriminator(lr_D):', '0.05')
+lr_G = st.text_input('Set the learning rate of Generator(lr_G):', '0.005')
+num_epochs = st.text_input('Set the epochs(num_epochs):', '30')
+
+# 将输入转换为数值类型
+try:
+    lr_D = float(lr_D)
+    lr_G = float(lr_G)
+    num_epochs = int(num_epochs)
+
+    # 打印结果
+    st.write('Discriminator learning rate(lr_D):', lr_D)
+    st.write('Generator learning rate(lr_G):', lr_G)
+    st.write('Latent dimension(latent_dim): 2(default)')
+    st.write('Traning epoches(num_epochs):', num_epochs)
+
+    if st.button('RUN'):
+        train_and_visualize_loss(lr_D=lr_D, lr_G=lr_G,
+                                 num_epochs=num_epochs, latent_dim=2)
+except ValueError:
+    st.error('Something goes wrong with your input.')
