@@ -20,23 +20,26 @@ conf_matrix = np.array([[tp, fp], [fn, tn]])
 st.write('Confusion Matrix:')
 st.write(conf_matrix)
 
-# 绘制混淆矩阵的热图
+# 绘制热图
 fig, ax = plt.subplots()
-ax.figure(figsize=(8, 6))
+fig.set_figwidth(8)
+fig.set_figheight(6)
 sns.heatmap(
     conf_matrix,
     annot=True,
     cmap='Blues',
     fmt='g',
     cbar=False,
-    square=True
+    square=True,
+    ax=ax
 )
-ax.xlabel('Predicted Label')
-ax.ylabel('True Label')
-ax.title('Confusion Matrix')
-ax.xticks([0.5, 1.5], ['Negative', 'Positive'])
-ax.yticks([0.5, 1.5], ['Negative', 'Positive'])
-
+ax.set_xlabel('Predicted Label')
+ax.set_ylabel('True Label')
+ax.set_title('Confusion Matrix')
+ax.set_xticks([0.5, 1.5])
+ax.set_xticklabels(['Negative', 'Positive'])
+ax.set_yticks([0.5, 1.5])
+ax.set_yticklabels(['Negative', 'Positive'])
 st.pyplot(fig)
 
 # 计算评估指标
@@ -63,19 +66,20 @@ y_score = np.concatenate(
 fpr, tpr, _ = roc_curve(y_true, y_score)
 roc_auc = auc(fpr, tpr)
 
-# 可视化 ROC 曲线
+# 绘制 ROC 曲线
 fig, ax = plt.subplots()
-ax.figure(figsize=(8, 6))
+fig.set_figwidth(8)
+fig.set_figheight(6)
 ax.plot(fpr, tpr, color='darkorange', lw=2,
         label='ROC curve (area = %0.2f)' % roc_auc)
 ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-ax.xlim([0.0, 1.0])
-ax.ylim([0.0, 1.05])
-ax.xlabel('False Positive Rate')
-ax.ylabel('True Positive Rate')
-ax.title('Receiver Operating Characteristic (ROC)')
+ax.set_xlim([0.0, 1.0])
+ax.set_ylim([0.0, 1.05])
+ax.set_xlabel('False Positive Rate')
+ax.set_ylabel('True Positive Rate')
+ax.set_title('Receiver Operating Characteristic (ROC)')
 ax.legend(loc="lower right")
-ax.show()
+ax.grid(True)
 
 st.pyplot(fig)
 
@@ -83,15 +87,16 @@ st.pyplot(fig)
 precision, recall, _ = precision_recall_curve(y_true, y_score)
 pr_auc = auc(recall, precision)
 
-# 可视化 PR 曲线
+# 绘制 PR 曲线
 fig, ax = plt.subplots()
-ax.figure(figsize=(8, 6))
+fig.set_figwidth(8)
+fig.set_figheight(6)
 ax.plot(recall, precision, color='blue', lw=2,
         label='Precision-Recall curve (area = %0.2f)' % pr_auc)
-ax.xlabel('Recall')
-ax.ylabel('Precision')
-ax.title('Precision-Recall Curve')
+ax.set_xlabel('Recall')
+ax.set_ylabel('Precision')
+ax.set_title('Precision-Recall Curve')
 ax.legend(loc="lower left")
-ax.show()
+ax.grid(True)
 
 st.pyplot(fig)
