@@ -6,3 +6,4 @@ gspread
 seaborn
 matplotlib
 torch
+scikit-learn
