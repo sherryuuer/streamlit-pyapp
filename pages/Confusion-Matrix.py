@@ -21,7 +21,8 @@ st.write('Confusion Matrix:')
 st.write(conf_matrix)
 
 # 绘制混淆矩阵的热图
-plt.figure(figsize=(8, 6))
+fig, ax = plt.subplots()
+ax.figure(figsize=(8, 6))
 sns.heatmap(
     conf_matrix,
     annot=True,
@@ -30,14 +31,13 @@ sns.heatmap(
     cbar=False,
     square=True
 )
-plt.xlabel('Predicted Label')
-plt.ylabel('True Label')
-plt.title('Confusion Matrix')
-plt.xticks([0.5, 1.5], ['Negative', 'Positive'])
-plt.yticks([0.5, 1.5], ['Negative', 'Positive'])
-plt.show()
+ax.xlabel('Predicted Label')
+ax.ylabel('True Label')
+ax.title('Confusion Matrix')
+ax.xticks([0.5, 1.5], ['Negative', 'Positive'])
+ax.yticks([0.5, 1.5], ['Negative', 'Positive'])
 
-st.pyplot()
+st.pyplot(fig)
 
 # 计算评估指标
 true_positive = conf_matrix[0][0]
@@ -64,32 +64,34 @@ fpr, tpr, _ = roc_curve(y_true, y_score)
 roc_auc = auc(fpr, tpr)
 
 # 可视化 ROC 曲线
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, color='darkorange', lw=2,
-         label='ROC curve (area = %0.2f)' % roc_auc)
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC)')
-plt.legend(loc="lower right")
-plt.show()
+fig, ax = plt.subplots()
+ax.figure(figsize=(8, 6))
+ax.plot(fpr, tpr, color='darkorange', lw=2,
+        label='ROC curve (area = %0.2f)' % roc_auc)
+ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+ax.xlim([0.0, 1.0])
+ax.ylim([0.0, 1.05])
+ax.xlabel('False Positive Rate')
+ax.ylabel('True Positive Rate')
+ax.title('Receiver Operating Characteristic (ROC)')
+ax.legend(loc="lower right")
+ax.show()
 
-st.pyplot()
+st.pyplot(fig)
 
 # 计算 PR 曲线和 AUC
 precision, recall, _ = precision_recall_curve(y_true, y_score)
 pr_auc = auc(recall, precision)
 
 # 可视化 PR 曲线
-plt.figure(figsize=(8, 6))
-plt.plot(recall, precision, color='blue', lw=2,
-         label='Precision-Recall curve (area = %0.2f)' % pr_auc)
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curve')
-plt.legend(loc="lower left")
-plt.show()
+fig, ax = plt.subplots()
+ax.figure(figsize=(8, 6))
+ax.plot(recall, precision, color='blue', lw=2,
+        label='Precision-Recall curve (area = %0.2f)' % pr_auc)
+ax.xlabel('Recall')
+ax.ylabel('Precision')
+ax.title('Precision-Recall Curve')
+ax.legend(loc="lower left")
+ax.show()
 
-st.pyplot()
+st.pyplot(fig)
