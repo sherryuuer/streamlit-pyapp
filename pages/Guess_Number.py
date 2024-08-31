@@ -1,8 +1,6 @@
 import random
 import streamlit as st
 
-# 比較する
-
 
 def game(goal_number, your_number):
     if your_number == goal_number:
@@ -16,22 +14,26 @@ def game(goal_number, your_number):
         return False
 
 
-def play_game(goal_number, times):
+def play_game(goal_number, max_attempts):
     st.session_state['attempt'] += 1
     your_number = st.number_input(
         "Choose your number:", min_value=1, max_value=100, step=1, key="your_number")
 
     if st.button("Submit"):
-        result = game(goal_number, your_number)
-        if result or st.session_state['attempt'] >= times:
-            st.session_state['game_over'] = True
+        if st.session_state['attempt'] <= max_attempts:
+            result = game(goal_number, your_number)
+            if result:
+                st.session_state['game_over'] = True
+            elif st.session_state['attempt'] >= max_attempts:
+                st.error(f"You've used all your attempts. The goal number was {
+                         goal_number}.")
+                st.session_state['game_over'] = True
         else:
-            st.session_state['attempts_left'] = times - \
-                st.session_state['attempt']
+            st.error("No attempts left. Please restart the game.")
 
 
 def main():
-    st.title("Guess the Number Game!!")
+    st.title("Guess the Number Game")
 
     if 'game_over' not in st.session_state:
         st.session_state['game_over'] = False
@@ -44,8 +46,7 @@ def main():
 
     if st.session_state['game_over']:
         st.button("Restart Game", on_click=lambda: reset_game())
-
-    if not st.session_state['game_over']:
+    else:
         choose_difficulty()
         play_game(st.session_state['goal_number'], st.session_state['times'])
 
@@ -63,6 +64,7 @@ def reset_game():
     st.session_state['attempt'] = 0
     st.session_state['goal_number'] = random.randint(1, 100)
     st.session_state['difficulty'] = 'easy'
+    st.session_state['your_number'] = 0  # Reset number input
 
 
 if __name__ == "__main__":
