@@ -23,10 +23,15 @@ def choose_difficulty():
 
 
 def play_game(goal_number, max_attempts):
-    st.session_state['attempt'] += 1
+    # 在原始代码中，st.session_state['attempt'] += 1 这行代码被放在了 play_game 函数的开头。
+    # 由于 Streamlit 的工作方式，每次用户与界面交互（比如输入数字）时，整个脚本都会重新运行。
+    # 这导致 attempt 计数器在用户每次与界面交互时都会增加，而不仅仅是在提交猜测时。
+    # st.session_state['attempt'] += 1
     your_number = st.number_input(
         "Choose your number:", min_value=1, max_value=100, step=1, key="your_number")
 
+    if st.button("Submit"):
+        st.session_state['attempt'] += 1
     if st.button("Submit"):
         if st.session_state['attempt'] <= max_attempts:
             result = game(goal_number, your_number)
@@ -46,7 +51,7 @@ def reset_game():
     st.session_state['attempt'] = 0
     st.session_state['goal_number'] = random.randint(1, 100)
     st.session_state['difficulty'] = 'easy'
-    st.session_state['your_number'] = 0  # Reset number input
+    st.session_state['your_number'] = 1  # Reset number input
 
 
 def main():
