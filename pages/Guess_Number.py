@@ -14,6 +14,14 @@ def game(goal_number, your_number):
         return False
 
 
+def choose_difficulty():
+    difficulty = st.selectbox("Choose difficulty:", options=[
+                              "easy", "hard"], key="difficulty")
+    st.session_state['times'] = 10 if difficulty == "easy" else 5
+    st.write(
+        f"You have {st.session_state['times']} attempts to guess the number.")
+
+
 def play_game(goal_number, max_attempts):
     st.session_state['attempt'] += 1
     your_number = st.number_input(
@@ -22,18 +30,27 @@ def play_game(goal_number, max_attempts):
     if st.button("Submit"):
         if st.session_state['attempt'] <= max_attempts:
             result = game(goal_number, your_number)
+            remaining_attempts = max_attempts - st.session_state['attempt']
+            st.write(f"Remaining attempts: {remaining_attempts}")
             if result:
                 st.session_state['game_over'] = True
             elif st.session_state['attempt'] >= max_attempts:
-                st.error(f"You've used all your attempts. The goal number was {
-                         goal_number}.")
+                st.error(f"No attempts. The goal number was {goal_number}.")
                 st.session_state['game_over'] = True
         else:
             st.error("No attempts left. Please restart the game.")
 
 
+def reset_game():
+    st.session_state['game_over'] = False
+    st.session_state['attempt'] = 0
+    st.session_state['goal_number'] = random.randint(1, 100)
+    st.session_state['difficulty'] = 'easy'
+    st.session_state['your_number'] = 0  # Reset number input
+
+
 def main():
-    st.title("Guess the Number Game")
+    st.title("Guess Number Game")
 
     if 'game_over' not in st.session_state:
         st.session_state['game_over'] = False
@@ -49,22 +66,6 @@ def main():
     else:
         choose_difficulty()
         play_game(st.session_state['goal_number'], st.session_state['times'])
-
-
-def choose_difficulty():
-    difficulty = st.selectbox("Choose difficulty:", options=[
-                              "easy", "hard"], key="difficulty")
-    st.session_state['times'] = 10 if difficulty == "easy" else 5
-    st.write(
-        f"You have {st.session_state['times']} attempts to guess the number.")
-
-
-def reset_game():
-    st.session_state['game_over'] = False
-    st.session_state['attempt'] = 0
-    st.session_state['goal_number'] = random.randint(1, 100)
-    st.session_state['difficulty'] = 'easy'
-    st.session_state['your_number'] = 0  # Reset number input
 
 
 if __name__ == "__main__":
