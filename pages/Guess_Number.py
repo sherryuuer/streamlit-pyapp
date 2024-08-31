@@ -15,8 +15,11 @@ def game(goal_number, your_number):
 
 
 def choose_difficulty():
-    difficulty = st.selectbox("Choose difficulty:", options=[
-                              "easy", "hard"], key="difficulty")
+    difficulty = st.selectbox(
+        "Choose difficulty:",
+        options=["easy", "hard"],
+        key="difficulty_select"
+    )
     st.session_state['times'] = 10 if difficulty == "easy" else 5
     st.write(
         f"You have {st.session_state['times']} attempts to guess the number.")
@@ -28,10 +31,16 @@ def play_game(goal_number, max_attempts):
     # 这导致 attempt 计数器在用户每次与界面交互时都会增加，而不仅仅是在提交猜测时。
     # st.session_state['attempt'] += 1
     your_number = st.number_input(
-        "Choose your number:", min_value=1, max_value=100, step=1, key="your_number")
+        "Choose your number:",
+        min_value=1,
+        max_value=100,
+        step=1,
+        key="number_input"
+    )
 
-    if st.button("Submit"):
+    if st.button("Submit", key="submit_button"):
         st.session_state['attempt'] += 1
+
     if st.button("Submit"):
         if st.session_state['attempt'] <= max_attempts:
             result = game(goal_number, your_number)
@@ -67,7 +76,7 @@ def main():
         st.session_state['difficulty'] = 'easy'
 
     if st.session_state['game_over']:
-        st.button("Restart Game", on_click=lambda: reset_game())
+        st.button("Restart Game", on_click=reset_game, key="restart_button")
     else:
         choose_difficulty()
         play_game(st.session_state['goal_number'], st.session_state['times'])
