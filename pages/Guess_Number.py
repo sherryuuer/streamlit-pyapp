@@ -41,7 +41,6 @@ def play_game(goal_number, max_attempts):
     if st.button("Submit", key="submit_button"):
         st.session_state['attempt'] += 1
 
-    if st.button("Submit"):
         if st.session_state['attempt'] <= max_attempts:
             result = game(goal_number, your_number)
             remaining_attempts = max_attempts - st.session_state['attempt']
@@ -49,7 +48,7 @@ def play_game(goal_number, max_attempts):
             if result:
                 st.session_state['game_over'] = True
             elif st.session_state['attempt'] >= max_attempts:
-                st.error(f"No attempts. The goal number was {goal_number}.")
+                st.error(f"No attempts left. The number was {goal_number}.")
                 st.session_state['game_over'] = True
         else:
             st.error("No attempts left. Please restart the game.")
