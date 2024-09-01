@@ -47,7 +47,10 @@ def main():
 
             if st.button("Submit to API"):
                 with st.spinner("Processing request..."):
-                    headers = {'Content-Type': 'application/octet-stream'}
+                    headers = {
+                        'Content-Type': 'application/octet-stream',
+                        'X-Custom-Header': st.secrets["token"]
+                    }
                     response = requests.post(
                         url,
                         data=processed_content.encode('utf-8'),
