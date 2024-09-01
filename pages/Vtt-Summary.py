@@ -20,42 +20,47 @@ def main():
     # Password authentication
     password = st.text_input(
         "Enter password to access the application", type="password")
+    submit_password = st.button("Submit Password")
 
-    if password != SECRET_PASSWORD:
-        st.error("Invalid password")
-        return
+    if submit_password:
+        if password == SECRET_PASSWORD:
+            st.success("Password is correct")
+            st.session_state.authenticated = True
+        else:
+            st.error("Invalid password")
+            st.session_state.authenticated = False
 
-    st.success("Password is correct")
+    if st.session_state.get("authenticated", False):
+        uploaded_file = st.file_uploader("Upload your VTT file", type="vtt")
 
-    uploaded_file = st.file_uploader("Upload your VTT file", type="vtt")
+        if uploaded_file is not None:
+            vtt_content = uploaded_file.read().decode('utf-8')
+            processed_content = process_vtt_file(vtt_content)
 
-    if uploaded_file is not None:
-        vtt_content = uploaded_file.read().decode('utf-8')
-        processed_content = process_vtt_file(vtt_content)
+            st.markdown("### Processed VTT Content")
+            st.markdown(f"```text\n{processed_content}\n```")
 
-        st.markdown("### Processed VTT Content")
-        st.markdown(f"```text\n{processed_content}\n```")
-
-        if st.button("Submit to API"):
-            headers = {'Content-Type': 'application/octet-stream'}
-            response = requests.post(
-                url,
-                data=processed_content.encode('utf-8'),
-                headers=headers
-            )
-
-            if response.status_code == 200:
-                st.success("POST successful")
-                st.markdown("### API Response")
-                st.markdown(
-                    "```text\n" +
-                    response.text.encode('utf-8').decode('unicode_escape') +
-                    "\n```"
+            if st.button("Submit to API"):
+                headers = {'Content-Type': 'application/octet-stream'}
+                response = requests.post(
+                    url,
+                    data=processed_content.encode('utf-8'),
+                    headers=headers
                 )
-            else:
-                st.error(f"Failed with status code: {response.status_code}")
-                st.markdown("### API Response")
-                st.markdown(f"```text\n{response.text}\n```")
+
+                if response.status_code == 200:
+                    st.success("POST successful")
+                    st.markdown("### API Response")
+                    st.markdown(
+                        "```text\n" +
+                        response.text.encode('utf-8').decode('unicode_escape') +
+                        "\n```"
+                    )
+                else:
+                    st.error(f"Failed with status code: {
+                             response.status_code}")
+                    st.markdown("### API Response")
+                    st.markdown(f"```text\n{response.text}\n```")
 
 
 if __name__ == "__main__":
