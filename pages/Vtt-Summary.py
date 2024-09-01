@@ -37,31 +37,37 @@ def main():
             vtt_content = uploaded_file.read().decode('utf-8')
             processed_content = process_vtt_file(vtt_content)
 
-            st.markdown("### Processed VTT Content")
-            st.markdown(f"```text\n{processed_content}\n```")
+            st.text_area(
+                "Processed VTT Content",
+                value=processed_content,
+                height=200,
+                max_chars=None,
+                key="processed_vtt"
+            )
 
             if st.button("Submit to API"):
-                headers = {'Content-Type': 'application/octet-stream'}
-                response = requests.post(
-                    url,
-                    data=processed_content.encode('utf-8'),
-                    headers=headers
-                )
+                with st.spinner("Processing request..."):
+                    headers = {'Content-Type': 'application/octet-stream'}
+                    response = requests.post(
+                        url,
+                        data=processed_content.encode('utf-8'),
+                        headers=headers
+                    )
 
-                if response.status_code == 200:
-                    st.success("POST successful")
-                    st.markdown("### API Response")
-                    st.markdown(
-                        "```text\n" +
-                        response.text.encode('utf-8').decode('unicode_escape') +
-                        "\n```"
-                    )
-                else:
-                    st.error(
-                        f"Failed with status code: {response.status_code}"
-                    )
-                    st.markdown("### API Response")
-                    st.markdown(f"```text\n{response.text}\n```")
+                    if response.status_code == 200:
+                        st.success("POST successful")
+                        st.markdown("### API Response")
+                        st.markdown(
+                            "```text\n" +
+                            response.text.encode('utf-8').decode('unicode_escape') +
+                            "\n```"
+                        )
+                    else:
+                        st.error(
+                            f"Failed with status code: {response.status_code}"
+                        )
+                        st.markdown("### API Response")
+                        st.markdown(f"```text\n{response.text}\n```")
 
 
 if __name__ == "__main__":
