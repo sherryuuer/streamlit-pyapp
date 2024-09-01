@@ -57,8 +57,9 @@ def main():
                         "\n```"
                     )
                 else:
-                    st.error(f"Failed with status code: {
-                             response.status_code}")
+                    st.error(
+                        f"Failed with status code: {response.status_code}"
+                    )
                     st.markdown("### API Response")
                     st.markdown(f"```text\n{response.text}\n```")
 
