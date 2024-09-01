@@ -4,6 +4,9 @@ import requests
 # Function URL
 url = "https://6dskoikdkrqfq3kbi5455uzp2y0wkrfl.lambda-url.ap-northeast-1.on.aws/"
 
+# Retrieve the password from Streamlit's secrets management
+SECRET_PASSWORD = st.secrets["password"]
+
 
 def process_vtt_file(vtt_content):
     lines = vtt_content.splitlines()
@@ -13,6 +16,16 @@ def process_vtt_file(vtt_content):
 
 def main():
     st.title("VTT File Processor")
+
+    # Password authentication
+    password = st.text_input(
+        "Enter password to access the application", type="password")
+
+    if password != SECRET_PASSWORD:
+        st.error("Invalid password")
+        return
+
+    st.success("Password is correct")
 
     uploaded_file = st.file_uploader("Upload your VTT file", type="vtt")
 
@@ -26,7 +39,10 @@ def main():
         if st.button("Submit to API"):
             headers = {'Content-Type': 'application/octet-stream'}
             response = requests.post(
-                url, data=processed_content.encode('utf-8'), headers=headers)
+                url,
+                data=processed_content.encode('utf-8'),
+                headers=headers
+            )
 
             if response.status_code == 200:
                 st.success("POST successful")
@@ -36,7 +52,6 @@ def main():
                     response.text.encode('utf-8').decode('unicode_escape') +
                     "\n```"
                 )
-
             else:
                 st.error(f"Failed with status code: {response.status_code}")
                 st.markdown("### API Response")
