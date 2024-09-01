@@ -20,7 +20,8 @@ def main():
         vtt_content = uploaded_file.read().decode('utf-8')
         processed_content = process_vtt_file(vtt_content)
 
-        st.text_area("Processed VTT Content", processed_content, height=200)
+        st.markdown("### Processed VTT Content")
+        st.markdown(f"```text\n{processed_content}\n```")
 
         if st.button("Submit to API"):
             headers = {'Content-Type': 'application/octet-stream'}
@@ -29,11 +30,13 @@ def main():
 
             if response.status_code == 200:
                 st.success("POST successful")
-                st.text_area("API Response", response.text.encode(
-                    'utf-8').decode('unicode_escape'), height=200)
+                st.markdown("### API Response")
+                st.markdown(f"```text\n{response.text.encode(
+                    'utf-8').decode('unicode_escape')}\n```")
             else:
                 st.error(f"Failed with status code: {response.status_code}")
-                st.text_area("API Response", response.text, height=200)
+                st.markdown("### API Response")
+                st.markdown(f"```text\n{response.text}\n```")
 
 
 if __name__ == "__main__":
