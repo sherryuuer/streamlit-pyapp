@@ -31,8 +31,12 @@ def main():
             if response.status_code == 200:
                 st.success("POST successful")
                 st.markdown("### API Response")
-                st.markdown(f"```text\n{response.text.encode(
-                    'utf-8').decode('unicode_escape')}\n```")
+                st.markdown(
+                    "```text\n" +
+                    response.text.encode('utf-8').decode('unicode_escape') +
+                    "\n```"
+                )
+
             else:
                 st.error(f"Failed with status code: {response.status_code}")
                 st.markdown("### API Response")
