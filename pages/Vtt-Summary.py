@@ -6,6 +6,7 @@ url = "https://6dskoikdkrqfq3kbi5455uzp2y0wkrfl.lambda-url.ap-northeast-1.on.aws
 
 # Retrieve the password from Streamlit's secrets management
 SECRET_PASSWORD = st.secrets["password"]
+TOKEN = st.secrets["token"]
 
 
 def process_vtt_file(vtt_content):
@@ -49,7 +50,7 @@ def main():
                 with st.spinner("Processing request..."):
                     headers = {
                         'Content-Type': 'application/octet-stream',
-                        'X-Custom-Header': st.secrets["token"]
+                        'X-Custom-Header': TOKEN
                     }
                     response = requests.post(
                         url,
