@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Function URL
-url = "https://6dskoikdkrqfq3kbi5455uzp2y0wkrfl.lambda-url.ap-northeast-1.on.aws/"
+url = ""
 
 # Retrieve the password from Streamlit's secrets management
 SECRET_PASSWORD = st.secrets["password"]
