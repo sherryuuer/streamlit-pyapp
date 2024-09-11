@@ -16,7 +16,13 @@ class Turtle:
 
 
 # 初始化乌龟们
-turtles = [Turtle('Turtle 1'), Turtle('Turtle 2'), Turtle('Turtle 3')]
+if 'turtles' not in st.session_state:
+    st.session_state.turtles = [
+        Turtle('Turtle 1'), Turtle('Turtle 2'), Turtle('Turtle 3')]
+    st.session_state.race_finished = False
+    st.session_state.winner = None
+
+turtles = st.session_state.turtles
 
 st.title("乌龟赛跑游戏")
 
@@ -24,11 +30,7 @@ st.title("乌龟赛跑游戏")
 user_guess = st.selectbox("请选择你认为会获胜的乌龟:", [t.name for t in turtles])
 
 # 按钮用于开始比赛
-if st.button("开始比赛"):
-    race_finished = False
-    winner = None
-
-    # 绘图初始化
+if st.button("开始比赛") and not st.session_state.race_finished:
     fig, ax = plt.subplots()
     ax.set_xlim(0, 50)
     ax.set_ylim(0, 10)
@@ -37,24 +39,28 @@ if st.button("开始比赛"):
 
     turtle_lines = [ax.plot([], [], 'o-', label=t.name)[0] for t in turtles]
 
-    # 赛跑过程的模拟
-    while not race_finished:
+    while not st.session_state.race_finished:
         for i, turtle in enumerate(turtles):
             turtle.move()
             if turtle.position >= 50:
-                race_finished = True
-                winner = turtle.name
+                st.session_state.race_finished = True
+                st.session_state.winner = turtle.name
                 break
             turtle_lines[i].set_data([0, turtle.position], [i*2 + 2, i*2 + 2])
 
-        # 更新绘图
         ax.legend()
         st.pyplot(fig)
+
+        # 延时 0.5 秒以模拟动态效果
         time.sleep(0.5)
 
-    st.write(f"比赛结束，{winner} 获胜！")
+        # 更新页面并保持比赛状态
+        st.experimental_rerun()
 
-    if user_guess == winner:
+# 比赛结束后的结果展示
+if st.session_state.race_finished:
+    st.write(f"比赛结束，{st.session_state.winner} 获胜！")
+    if user_guess == st.session_state.winner:
         st.success("恭喜你猜对了！")
     else:
         st.error("很遗憾，猜错了。")
