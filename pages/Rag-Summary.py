@@ -1,4 +1,5 @@
 import streamlit as st
+import tempfile
 import google.generativeai as genai
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -6,64 +7,91 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 
+# 处理 PDF 文件
 
-# 处理 PDF
-def process_pdf(pdf_path, api_key):
-    CHUNK_SIZE = 700
-    CHUNK_OVERLAP = 100
 
-    pdf_loader = PyPDFLoader(pdf_path)
-    split_pdf_document = pdf_loader.load_and_split()
+def process_pdf(uploaded_pdf, api_key):
+    try:
+        CHUNK_SIZE = 700
+        CHUNK_OVERLAP = 100
 
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=CHUNK_SIZE,
-        chunk_overlap=CHUNK_OVERLAP
-    )
-    context = "\n\n".join(str(p.page_content) for p in split_pdf_document)
-    texts = text_splitter.split_text(context)
+        # 使用临时文件保存上传的 PDF
+        with tempfile.NamedTemporaryFile(delete=False) as temp_pdf:
+            temp_pdf.write(uploaded_pdf.read())  # 将上传的文件内容写入临时文件
+            temp_pdf_path = temp_pdf.name  # 获取临时文件的路径
 
-    embeddings = GoogleGenerativeAIEmbeddings(
-        model='models/embedding-001',
-        google_api_key=api_key
-    )
+        # 加载 PDF 文件
+        pdf_loader = PyPDFLoader(temp_pdf_path)
+        split_pdf_document = pdf_loader.load_and_split()
 
-    vector_index = Chroma.from_texts(texts, embeddings)
-    retriever = vector_index.as_retriever(search_kwargs={"k": 5})
+        st.write(f"PDF Loaded: {len(split_pdf_document)} pages")
 
-    return retriever
+        # 拆分文本
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=CHUNK_SIZE,
+            chunk_overlap=CHUNK_OVERLAP
+        )
+        context = "\n\n".join(str(p.page_content) for p in split_pdf_document)
+        texts = text_splitter.split_text(context)
 
+        # 创建 embedding
+        embeddings = GoogleGenerativeAIEmbeddings(
+            model='models/embedding-001',
+            google_api_key=api_key
+        )
+
+        # 创建向量索引
+        vector_index = Chroma.from_texts(texts, embeddings)
+        retriever = vector_index.as_retriever(search_kwargs={"k": 5})
+
+        return retriever
+    except Exception as e:
+        st.error(f"Error processing PDF: {str(e)}")
+        return None
 
 # 处理 VTT 文件
-def process_vtt_file(vtt_content):
-    lines = vtt_content.splitlines()
-    filtered_lines = [line for line in lines if line.startswith('<v')]
-    return '\n'.join(filtered_lines)
 
+
+def process_vtt_file(vtt_content):
+    try:
+        lines = vtt_content.splitlines()
+        filtered_lines = [line for line in lines if line.startswith('<v')]
+        return '\n'.join(filtered_lines)
+    except Exception as e:
+        st.error(f"Error processing VTT: {str(e)}")
+        return ""
 
 # 根据 PDF 内容总结 VTT 文件
+
+
 def summarize_vtt(vtt_content, retriever, api_key):
-    gemini_model = ChatGoogleGenerativeAI(
-        model='gemini-pro',
-        google_api_key=api_key,
-        temperature=0.8
-    )
+    try:
+        gemini_model = ChatGoogleGenerativeAI(
+            model='gemini-pro',
+            google_api_key=api_key,
+            temperature=0.8
+        )
 
-    qa_chain = RetrievalQA.from_chain_type(
-        gemini_model,
-        retriever=retriever,
-        return_source_documents=True
-    )
+        qa_chain = RetrievalQA.from_chain_type(
+            gemini_model,
+            retriever=retriever,
+            return_source_documents=True
+        )
 
-    # 使用 PDF 生成的 embedding 提问
-    question = f"""
-        Summarize the VTT file based on the PDF content:\n\n{vtt_content}
-        """
-    result = qa_chain.invoke({"query": question})
+        # 使用 PDF 生成的 embedding 提问
+        question = f"""
+            Summarize the following VTT file based on the PDF content:\n\n{vtt_content}
+            """
+        result = qa_chain.invoke({"query": question})
 
-    return result["result"]
-
+        return result["result"]
+    except Exception as e:
+        st.error(f"Error during summarization: {str(e)}")
+        return ""
 
 # Streamlit 应用程序
+
+
 def main():
     st.title("PDF & VTT File Processor")
 
@@ -79,15 +107,16 @@ def main():
 
         if uploaded_pdf and uploaded_vtt:
             with st.spinner("Processing PDF..."):
-                pdf_path = uploaded_pdf.name
-                retriever = process_pdf(pdf_path, api_key)
+                retriever = process_pdf(uploaded_pdf, api_key)
 
-            vtt_content = uploaded_vtt.read().decode('utf-8')
-            processed_vtt = process_vtt_file(vtt_content)
+                if retriever:
+                    vtt_content = uploaded_vtt.read().decode('utf-8')
+                    processed_vtt = process_vtt_file(vtt_content)
 
-            with st.spinner("Summarizing VTT based on PDF..."):
-                summary = summarize_vtt(processed_vtt, retriever, api_key)
-                st.text_area("VTT Summary", value=summary, height=300)
+                    with st.spinner("Summarizing VTT based on PDF..."):
+                        summary = summarize_vtt(
+                            processed_vtt, retriever, api_key)
+                        st.text_area("VTT Summary", value=summary, height=300)
 
 
 if __name__ == "__main__":
