@@ -13,3 +13,4 @@ langchain
 langchain_google_genai
 chromadb
 pypdf
+sqlite3>=3.35.0
