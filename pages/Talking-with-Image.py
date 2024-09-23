@@ -58,7 +58,11 @@ if __name__ == '__main__':
                 answer = ask_and_get_answer(prompt, pil_image)
 
                 # displaying the answer in a text area widget.
-                st.text_area('Dear Gemini Answer: ', value=answer)
+                st.text_area(
+                    ':) Gemini🤖 Answer: ',
+                    value=answer,
+                    height=400,
+                )
 
             # adding a divider to separate the current answer from the previous ones.
             st.divider()
