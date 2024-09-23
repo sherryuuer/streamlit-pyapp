@@ -4,12 +4,12 @@ import google.generativeai as genai
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain.vectorstores import Chroma
+# from langchain.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 
+
 # 处理 PDF 文件
-
-
 def process_pdf(uploaded_pdf, api_key):
     try:
         CHUNK_SIZE = 700
@@ -41,7 +41,8 @@ def process_pdf(uploaded_pdf, api_key):
         )
 
         # 创建向量索引
-        vector_index = Chroma.from_texts(texts, embeddings)
+        # vector_index = Chroma.from_texts(texts, embeddings)
+        vector_index = FAISS.from_texts(texts, embeddings)
         retriever = vector_index.as_retriever(search_kwargs={"k": 5})
 
         return retriever
@@ -49,9 +50,8 @@ def process_pdf(uploaded_pdf, api_key):
         st.error(f"Error processing PDF: {str(e)}")
         return None
 
+
 # 处理 VTT 文件
-
-
 def process_vtt_file(vtt_content):
     try:
         lines = vtt_content.splitlines()
@@ -61,9 +61,8 @@ def process_vtt_file(vtt_content):
         st.error(f"Error processing VTT: {str(e)}")
         return ""
 
+
 # 根据 PDF 内容总结 VTT 文件
-
-
 def summarize_vtt(vtt_content, retriever, api_key):
     try:
         gemini_model = ChatGoogleGenerativeAI(
@@ -89,9 +88,8 @@ def summarize_vtt(vtt_content, retriever, api_key):
         st.error(f"Error during summarization: {str(e)}")
         return ""
 
+
 # Streamlit 应用程序
-
-
 def main():
     st.title("PDF & VTT File Processor")
 
