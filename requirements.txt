@@ -8,13 +8,8 @@ matplotlib
 torch
 scikit-learn
 requests
-# ollama
-# chromadb
-# pdfplumber
-# langchain
-# langchain-core
-# langchain-community
-# langchain_text_splitters
-# unstructured
-# unstructured[all-docs]
-# onnx==1.16.1
+google-generativeai
+langchain
+langchain_google_genai
+chromadb
+pypdf
