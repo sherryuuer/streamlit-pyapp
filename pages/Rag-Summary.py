@@ -79,8 +79,21 @@ def summarize_vtt(vtt_content, retriever, api_key):
 
         # 使用 PDF 生成的 embedding 提问
         question = f"""
-            Summarize the following VTT file based on the PDF content:\n\n{vtt_content}
-            """
+        以下のVTTファイルに基づいて、PDF内容を参考に会議記録をまとめてください。出力フォーマットは以下のようにしてください。
+
+        1. 参加者: （会議に参加した人たちの名前）
+        2. 会議日時: （会議が行われた日時）
+        3. 議事録:
+            - (議論された主な内容を7つの箇条書きで示してください)
+        4. 結論:
+            - (得られた結論)
+        5. 根拠:
+            - (結論に至った理由やPDFの内容に基づいた根拠)
+
+        以下のVTTファイルの内容を使用してください:
+
+        {vtt_content}
+        """
         result = qa_chain.invoke({"query": question})
 
         return result["result"]
