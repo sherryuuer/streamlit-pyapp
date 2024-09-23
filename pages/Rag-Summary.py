@@ -55,8 +55,9 @@ def summarize_vtt(vtt_content, retriever, api_key):
     )
 
     # 使用 PDF 生成的 embedding 提问
-    question = f"Summarize the following VTT file based on the PDF content:\n\n{
-        vtt_content}"
+    question = f"""
+        Summarize the VTT file based on the PDF content:\n\n{vtt_content}
+        """
     result = qa_chain.invoke({"query": question})
 
     return result["result"]
