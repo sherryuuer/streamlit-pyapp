@@ -66,7 +66,7 @@ def process_vtt_file(vtt_content):
 def summarize_vtt(vtt_content, retriever, api_key):
     try:
         gemini_model = ChatGoogleGenerativeAI(
-            model='gemini-pro',
+            model='gemini-1.5-pro-latest',
             google_api_key=api_key,
             temperature=0.8
         )
