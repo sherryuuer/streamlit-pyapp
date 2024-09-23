@@ -6,7 +6,7 @@ import google.generativeai as genai
 
 def ask_and_get_answer(prompt, img):
     # creating a GenerativeModel instance using the Gemini-Pro-Vision model
-    model = genai.GenerativeModel('gemini-pro-vision')
+    model = genai.GenerativeModel('gemini-1.5-pro-latest')
 
     # generate a text response based on the prompt and image
     response = model.generate_content([prompt, img])
