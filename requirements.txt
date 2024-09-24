@@ -11,6 +11,7 @@ requests
 google-generativeai
 langchain
 langchain_google_genai
+langchain_community
 chromadb
 pypdf
 faiss-cpu

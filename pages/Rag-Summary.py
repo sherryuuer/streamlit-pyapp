@@ -105,6 +105,14 @@ def summarize_vtt(vtt_content, retriever, api_key):
 # Streamlit 应用程序
 def main():
     st.title("VTT File Processor with RAG 🤖")
+    st.markdown(
+        """
+    1. GoogleのAPIを入力
+    2. RAG対象のPDFをアップロード
+    3. サマリ対象のVTTをアップロード
+    4. 結果待つ
+    """
+    )
 
     # 用户输入 API 密钥
     api_key = st.text_input("Enter your Google API key", type="password")
